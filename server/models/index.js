@@ -2,37 +2,34 @@ var db = require('../db');
 
 module.exports = {
   messages: {
-    get: function() {
-      db.query('SELECT * from messages', function(err, rows, fields) {
-        if (!err) {
-          return rows;
-          console.log(rows);
-        } else {
-          console.log('Error while performing Query.');
-        }
+    get: function(callback) {
+      var queryString = 'SELECT messages.id messages.text, messages.roomname, users.username FROM messages LEFT OUTER JOIN users ON (messages.userid = users.id) ORDER by messages.id DESC';
+      db.query(queryString, function(err, results) {
+        callback(results);
       });
-    }, // a function which produces all the messages
+    },
 
-    post: function(object) {
-
-      db.query('INSERT into messages VALUES ', function(err, rows, fields) {
-        if (!err) {
-          return rows;
-        } else {
-          console.log('Error while performing Query.');
-        }
+    post: function(queryArgs, callback) {
+      var queryString = 'INSERT INTO messages(userid, text, roomname) VALUES (?, (SELECT id FROM users WHERE username = ? LIMIT 1), ?)';
+      db.query(queryString, queryArgs, function(err, results) {
+        callback(results);
       });
-    }, // a function which can be used to insert a message into the database
+    },
   },
 
   users: {
-    // Ditto as above.
-    get: function() {
-
+    get: function(callback) {
+      var queryString = 'SELECT * FROM users';
+      db.query(queryString, function(err, results) {
+        callback(results);
+      });
     },
 
-    post: function() {
-
+    post: function(queryArgs, callback) {
+      var queryString = 'INSERT INTO users(username) VALUES (?)';
+      db.query(queryString, queryArgs, function(err, results) {
+        callback(results);
+      });
     },
   },
 };
