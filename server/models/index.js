@@ -3,11 +3,25 @@ var db = require('../db');
 module.exports = {
   messages: {
     get: function() {
-      
+      db.query('SELECT * from messages', function(err, rows, fields) {
+        if (!err) {
+          return rows;
+          console.log(rows);
+        } else {
+          console.log('Error while performing Query.');
+        }
+      });
     }, // a function which produces all the messages
 
-    post: function() {
+    post: function(object) {
 
+      db.query('INSERT into messages VALUES ', function(err, rows, fields) {
+        if (!err) {
+          return rows;
+        } else {
+          console.log('Error while performing Query.');
+        }
+      });
     }, // a function which can be used to insert a message into the database
   },
 
@@ -23,18 +37,5 @@ module.exports = {
   },
 };
 
-// app.get('/fetchdata',function(req,res){
-//     var data = {
-//         "Data":""
-//     };
-    
-//     connection.query("SELECT * from testing",function(err, rows, fields){
-//         if(rows.length != 0){
-//             data["Data"] = rows;
-//             res.json(data);
-//         }else{
-//             data["Data"] = 'No data Found..';
-//             res.json(data);
-//         }
-//     });
-// });
+// module.exports.messages.POST({})
+
